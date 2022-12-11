@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>公車查詢</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="./icon.png" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://unpkg.com/feather-icons"></script>
+    </head>
+    <body>       
+        <div class="container">
+            <div class="text-center mt-5">
+                <div class="alert alert-warning" role="alert">
+                    此網站僅能查詢台中市區公車，目前由 <a href="https://discord.gg/xjqDjPfju9" target="_blank">xiaojie#4695</a> 維護 ， 若使用時遇到問題請至 <a href="https://discord.gg/xjqDjPfju9" target="_blank">Discord</a> 聯繫管理員。
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="container">
+            <div class="text-center mt-5">
+                <div class="alert alert-warning" role="alert">
+                    你的一點點回饋是我們的動力，填寫表單讓我們變得更好吧！
+                </div>
+            </div>
+        </div>
+        -->
+
+        <!-- Page content-->
+        <div class="container">
+            <div class="text-center mt-5">
+                <h3><b>請輸入公車代號或點擊下方按鈕</b></h3>  
+                <hr>
+                <form>
+                    <div class="form-label-group">
+                        <input type="text" class="form-control" style="text-align:center" name="route" id="route" placeholder="請輸入公車路線" required>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="text-center mt-5">
+                <h3><b>校內公車(開往校內)</b></h3>
+                <hr>
+                <a href="tcbusgo.html?route=162" class="btn btn-primary">162 路</a> <a href="tcbusgo.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusback.html?route=368" class="btn btn-primary">368 路</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="text-center mt-5">
+                <h3><b>校內公車(開往校外)</b></h3>
+                <hr>
+                <a href="tcbusback.html?route=162" class="btn btn-primary">162 路</a> <a href="tcbusback.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusGO.html?route=368" class="btn btn-primary">368 路</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="text-center mt-5">
+                <h3><b>幹線公車(往台中車站)</b></h3>
+                <hr>
+                <a href="tcbusback.html?route=300" class="btn btn-primary">300 路</a> <a href="tcbusback.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusback.html?route=302" class="btn btn-primary">302 路</a> <a href="tcbusback.html?route=303" class="btn btn-primary">303 路</a> <a href="tcbusback.html?route=304" class="btn btn-primary">304 路</a> <a href="tcbusback.html?route=305" class="btn btn-primary">305 路</a> <a href="tcbusback.html?route=306" class="btn btn-primary">306 路</a> <a href="tcbusback.html?route=307" class="btn btn-primary">307 路</a> <a href="tcbusback.html?route=308" class="btn btn-primary">308 路</a> <a href="tcbusback.html?route=309" class="btn btn-primary">309 路</a> <a href="tcbusback.html?route=310" class="btn btn-primary">310 路</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="text-center mt-5">
+                <h3><b>幹線公車(往靜宜大學/海線)</b></h3>
+                <hr>
+                <a href="tcbusgo.html?route=300" class="btn btn-primary">300 路</a> <a href="tcbusgo.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusgo.html?route=302" class="btn btn-primary">302 路</a> <a href="tcbusgo.html?route=303" class="btn btn-primary">303 路</a> <a href="tcbusgo.html?route=304" class="btn btn-primary">304 路</a> <a href="tcbusgo.html?route=305" class="btn btn-primary">305 路</a> <a href="tcbusgo.html?route=306" class="btn btn-primary">306 路</a> <a href="tcbusgo.html?route=307" class="btn btn-primary">307 路</a> <a href="tcbusgo.html?route=308" class="btn btn-primary">308 路</a> <a href="tcbusgo.html?route=309" class="btn btn-primary">309 路</a> <a href="tcbusgo.html?route=310" class="btn btn-primary">310 路</a>    
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="text-center mt-5">
+                <div class="alert alert-info" role="alert">
+                    資料來源：<a href="https://tdx.transportdata.tw/" target="_blank">TDX 運輸資料流通服務</a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container">
+              <span class="text-muted">Copyright © 2022 <a href="https://discord.gg/xjqDjPfju9" target="_blank">PU Discord.</a> All rights reserved.</span>
+            </div>
+        </footer>
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                const params = new URLSearchParams(location.search);
+                var Route = "";
+                Route = String(params.get("route"));
+                console.log(Route);
+                if(Route != "null"){
+                    url = "tcbusgo.html?route=" + Route + "";
+                    $(location).attr("href",decodeURI(url))
+                }
+            });    
+        </script>
+    </body>
+</html>
