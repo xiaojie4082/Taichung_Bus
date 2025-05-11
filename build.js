@@ -15,6 +15,10 @@ if (!fs.existsSync('dist')) {
     fs.mkdirSync('dist');
 }
 
+// 要排除的目錄和文件
+const excludeDirs = ['.git', 'node_modules', 'dist'];
+const excludeFiles = ['.env', 'build.js', 'package.json', 'package-lock.json'];
+
 // 複製所有檔案到 dist 目錄
 function copyDir(src, dest) {
     if (!fs.existsSync(dest)) {
@@ -27,9 +31,12 @@ function copyDir(src, dest) {
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
 
+        // 跳過要排除的目錄和文件
         if (entry.isDirectory()) {
-            copyDir(srcPath, destPath);
-        } else {
+            if (!excludeDirs.includes(entry.name)) {
+                copyDir(srcPath, destPath);
+            }
+        } else if (!excludeFiles.includes(entry.name)) {
             fs.copyFileSync(srcPath, destPath);
         }
     }
@@ -39,10 +46,4 @@ function copyDir(src, dest) {
 copyDir('.', 'dist');
 
 // 寫入處理過的 config.js
-fs.writeFileSync(path.join('dist', 'js', 'config.js'), configContent);
-
-// 移除不需要的檔案
-fs.unlinkSync(path.join('dist', '.env'));
-fs.unlinkSync(path.join('dist', 'build.js'));
-fs.unlinkSync(path.join('dist', 'package.json'));
-fs.unlinkSync(path.join('dist', 'package-lock.json')); 
+fs.writeFileSync(path.join('dist', 'js', 'config.js'), configContent); 
