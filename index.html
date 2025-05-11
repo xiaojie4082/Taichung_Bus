@@ -1,111 +1,273 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
+        <meta name="description" content="台中公車即時查詢系統" />
         <meta name="author" content="" />
-        <title>公車查詢</title>
-        <!-- Favicon-->
+        <title>台中公車查詢</title>
         <link rel="icon" type="image/x-icon" href="./icon.png" />
-        <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://unpkg.com/feather-icons"></script>
+        <style>
+            body {
+                background: #f8f9fa;
+                color: #2c3e50;
+            }
+            .search-container {
+                background: white;
+                padding: 3rem 2rem;
+                border-radius: 16px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                margin-bottom: 2rem;
+                transition: all 0.3s ease;
+            }
+            .search-container:hover {
+                box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            }
+            .route-btn {
+                margin: 0.5rem;
+                min-width: 100px;
+                padding: 0.8rem 1.5rem;
+                border-radius: 12px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                border: none;
+            }
+            .route-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            .btn-primary {
+                background: #4361ee;
+            }
+            .btn-primary:hover {
+                background: #3a56d4;
+            }
+            .btn-success {
+                background: #2ec4b6;
+            }
+            .btn-success:hover {
+                background: #29b0a3;
+            }
+            .section-title {
+                color: #2c3e50;
+                margin-bottom: 2rem;
+                font-weight: 600;
+                position: relative;
+                padding-bottom: 0.5rem;
+            }
+            .section-title:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 3px;
+                background: #4361ee;
+                border-radius: 3px;
+            }
+            .form-control {
+                border-radius: 12px;
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+                border: 2px solid #e9ecef;
+                transition: all 0.3s ease;
+                background: #f8f9fa;
+            }
+            .form-control:focus {
+                border-color: #4361ee;
+                box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+                background: white;
+            }
+            .card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+            }
+            .card:hover {
+                box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            }
+            .card-body {
+                padding: 2rem;
+            }
+            .footer {
+                background: white !important;
+                border-top: 1px solid #e9ecef;
+                padding: 1.5rem 0;
+            }
+            .alert-info {
+                background: #e3f2fd;
+                border: none;
+                border-radius: 12px;
+                color: #0d47a1;
+            }
+            .alert-link {
+                color: #4361ee;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            .alert-link:hover {
+                text-decoration: underline;
+            }
+            .route-section {
+                margin-bottom: 2rem;
+            }
+            .route-section h4 {
+                color: #2c3e50;
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+            }
+            .route-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+            @media (max-width: 768px) {
+                .search-container {
+                    padding: 1.5rem 1rem;
+                    margin: 0.5rem;
+                }
+                .card-body {
+                    padding: 1rem;
+                }
+                .route-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                    gap: 0.5rem;
+                    padding: 0 0.5rem;
+                }
+                .route-btn {
+                    min-width: auto;
+                    padding: 0.6rem 0.8rem;
+                    font-size: 0.9rem;
+                    margin: 0;
+                }
+                .section-title {
+                    font-size: 1.5rem;
+                    margin-bottom: 1.5rem;
+                }
+                .form-control {
+                    padding: 0.8rem 1rem;
+                    font-size: 1rem;
+                }
+                .alert-info {
+                    margin: 0.5rem;
+                    padding: 0.8rem;
+                }
+                .container {
+                    padding-left: 0.5rem;
+                    padding-right: 0.5rem;
+                }
+                .card {
+                    margin: 0.5rem;
+                }
+                .route-section h4 {
+                    font-size: 1.1rem;
+                    margin-bottom: 1rem;
+                }
+            }
+            @media (max-width: 360px) {
+                .route-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                }
+                .route-btn {
+                    padding: 0.5rem 0.6rem;
+                    font-size: 0.85rem;
+                }
+                .section-title {
+                    font-size: 1.3rem;
+                }
+            }
+        </style>
     </head>
     <body>
-
-        <!-- Page content-->
-        <div class="container">
-            <div class="text-center mt-5">
-                <h3><b>請輸入公車代號或點擊下方按鈕</b></h3>  
-                <hr>
-                <form>
-                    <div class="form-label-group">
-                        <input type="text" class="form-control" style="text-align:center" name="route" id="route" placeholder="請輸入公車路線" required>
+        <div class="container py-5">
+            <div class="search-container text-center">
+                <h2 class="section-title">台中公車即時查詢</h2>
+                <p class="text-muted mb-4">請輸入公車路線代號或選擇下方路線</p>
+                <form onsubmit="handleSubmit(event)" class="mb-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control mx-auto" style="max-width: 400px;" name="route" id="route" placeholder="請輸入公車路線代號" required>
                     </div>
                 </form>
             </div>
-        </div>
 
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="section-title">幹線公車路線</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="route-section">
+                                <h4 class="text-center">往台中車站</h4>
+                                <div class="route-grid">
+                                    <a href="bus-route.html?route=300&direction=0" class="btn btn-primary route-btn">300 路</a>
+                                    <a href="bus-route.html?route=301&direction=0" class="btn btn-primary route-btn">301 路</a>
+                                    <a href="bus-route.html?route=302&direction=0" class="btn btn-primary route-btn">302 路</a>
+                                    <a href="bus-route.html?route=303&direction=0" class="btn btn-primary route-btn">303 路</a>
+                                    <a href="bus-route.html?route=304&direction=0" class="btn btn-primary route-btn">304 路</a>
+                                    <a href="bus-route.html?route=305&direction=0" class="btn btn-primary route-btn">305 路</a>
+                                    <a href="bus-route.html?route=306&direction=0" class="btn btn-primary route-btn">306 路</a>
+                                    <a href="bus-route.html?route=307&direction=0" class="btn btn-primary route-btn">307 路</a>
+                                    <a href="bus-route.html?route=308&direction=0" class="btn btn-primary route-btn">308 路</a>
+                                    <a href="bus-route.html?route=309&direction=0" class="btn btn-primary route-btn">309 路</a>
+                                    <a href="bus-route.html?route=310&direction=0" class="btn btn-primary route-btn">310 路</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="route-section">
+                                <h4 class="text-center">往靜宜大學/海線</h4>
+                                <div class="route-grid">
+                                    <a href="bus-route.html?route=300&direction=1" class="btn btn-success route-btn">300 路</a>
+                                    <a href="bus-route.html?route=301&direction=1" class="btn btn-success route-btn">301 路</a>
+                                    <a href="bus-route.html?route=302&direction=1" class="btn btn-success route-btn">302 路</a>
+                                    <a href="bus-route.html?route=303&direction=1" class="btn btn-success route-btn">303 路</a>
+                                    <a href="bus-route.html?route=304&direction=1" class="btn btn-success route-btn">304 路</a>
+                                    <a href="bus-route.html?route=305&direction=1" class="btn btn-success route-btn">305 路</a>
+                                    <a href="bus-route.html?route=306&direction=1" class="btn btn-success route-btn">306 路</a>
+                                    <a href="bus-route.html?route=307&direction=1" class="btn btn-success route-btn">307 路</a>
+                                    <a href="bus-route.html?route=308&direction=1" class="btn btn-success route-btn">308 路</a>
+                                    <a href="bus-route.html?route=309&direction=1" class="btn btn-success route-btn">309 路</a>
+                                    <a href="bus-route.html?route=310&direction=1" class="btn btn-success route-btn">310 路</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!--<div class="container">
-            <div class="text-center mt-5">
-                <h3><b>校內公車(開往校內)</b></h3>
-                <hr>
-                <a href="tcbusgo.html?route=162" class="btn btn-primary">162 路</a> <a href="tcbusgo.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusback.html?route=368" class="btn btn-primary">368 路</a>
+            <div class="alert alert-info" role="alert">
+                <i data-feather="info" class="me-2"></i>
+                資料來源：<a href="https://tdx.transportdata.tw/" target="_blank" class="alert-link">TDX 運輸資料流通服務</a>
             </div>
         </div>
 
-        <div class="container">
-            <div class="text-center mt-5">
-                <h3><b>校內公車(開往校外)</b></h3>
-                <hr>
-                <a href="tcbusback.html?route=162" class="btn btn-primary">162 路</a> <a href="tcbusback.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusGO.html?route=368" class="btn btn-primary">368 路</a>
-            </div>
-        </div> -->
-
-        <div class="container">
-            <div class="text-center mt-5">
-                <h3><b>幹線公車(往台中車站)</b></h3>
-                <hr>
-                <div class="text-center mt-3">
-                    <a href="tcbusback.html?route=300" class="btn btn-primary">300 路</a> <a href="tcbusback.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusback.html?route=302" class="btn btn-primary">302 路</a> <a href="tcbusback.html?route=303" class="btn btn-primary">303 路</a>
-                </div>
-                <div class="text-center mt-3">
-                    <a href="tcbusback.html?route=304" class="btn btn-primary">304 路</a> <a href="tcbusback.html?route=305" class="btn btn-primary">305 路</a> <a href="tcbusback.html?route=306" class="btn btn-primary">306 路</a> <a href="tcbusback.html?route=307" class="btn btn-primary">307 路</a>
-                </div>
-                <div class="text-center mt-3">
-                    <a href="tcbusback.html?route=308" class="btn btn-primary">308 路</a> <a href="tcbusback.html?route=309" class="btn btn-primary">309 路</a> <a href="tcbusback.html?route=310" class="btn btn-primary">310 路</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="text-center mt-5">
-                <h3><b>幹線公車(往靜宜大學/海線)</b></h3>
-                <hr>
-                <div class="text-center mt-3">
-                    <a href="tcbusgo.html?route=300" class="btn btn-primary">300 路</a> <a href="tcbusgo.html?route=301" class="btn btn-primary">301 路</a> <a href="tcbusgo.html?route=302" class="btn btn-primary">302 路</a> <a href="tcbusgo.html?route=303" class="btn btn-primary">303 路</a>
-                </div>
-                <div class="text-center mt-3">
-                    <a href="tcbusgo.html?route=304" class="btn btn-primary">304 路</a> <a href="tcbusgo.html?route=305" class="btn btn-primary">305 路</a> <a href="tcbusgo.html?route=306" class="btn btn-primary">306 路</a> <a href="tcbusgo.html?route=307" class="btn btn-primary">307 路</a>
-                </div>
-                <div class="text-center mt-3">
-                    <a href="tcbusgo.html?route=308" class="btn btn-primary">308 路</a> <a href="tcbusgo.html?route=309" class="btn btn-primary">309 路</a> <a href="tcbusgo.html?route=310" class="btn btn-primary">310 路</a>    
-                </div>
-            </div>
-        </div>
-
-
-        <div class="container">
-            <div class="text-center mt-5">
-                <div class="alert alert-info" role="alert">
-                    資料來源：<a href="https://tdx.transportdata.tw/" target="_blank">TDX 運輸資料流通服務</a>
-                </div>
-            </div>
-        </div>
-
-        <footer class="footer mt-auto py-3 bg-light">
-            <div class="container">
-              <span class="text-muted">Copyright © 2022 <a href="" target="_blank">xiaojie4082.</a> All rights reserved.</span>
+        <footer class="footer">
+            <div class="container text-center">
+                <span class="text-muted">Copyright © 2024 <a href="" target="_blank" class="text-decoration-none">xiaojie4082</a>. All rights reserved.</span>
             </div>
         </footer>
 
-        <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script>
+            function handleSubmit(event) {
+                event.preventDefault();
+                const route = document.getElementById('route').value;
+                window.location.href = `bus-route.html?route=${route}&direction=0`;
+            }
+
             $(document).ready(function(){
+                feather.replace();
                 const params = new URLSearchParams(location.search);
-                var Route = "";
-                Route = String(params.get("route"));
-                console.log(Route);
-                if(Route != "null"){
-                    url = "tcbusgo.html?route=" + Route + "";
-                    $(location).attr("href",decodeURI(url))
+                var Route = String(params.get("route"));
+                if(Route && Route !== "null"){
+                    url = "bus-route.html?route=" + Route + "&direction=0";
+                    $(location).attr("href", decodeURI(url));
                 }
             });    
         </script>
