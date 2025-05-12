@@ -493,7 +493,17 @@
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
             import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
             import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
-            import { firebaseConfig } from './js/config.js';
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyDVSASjewTZJexL64aFf3nQL2gA5bzO5b4",
+                authDomain: "taichungbus-a6cc5.firebaseapp.com",
+                projectId: "taichungbus-a6cc5",
+                storageBucket: "taichungbus-a6cc5.firebasestorage.app",
+                messagingSenderId: "959390803671",
+                appId: "1:959390803671:web:bc5c79576e5884737cf292",
+                measurementId: "G-2W3F922KRZ",
+                databaseURL: "https://taichungbus-a6cc5-default-rtdb.firebaseio.com"
+            };
 
             // Initialize Firebase
             const app = initializeApp(firebaseConfig);
