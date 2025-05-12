@@ -510,6 +510,9 @@
             window.firebaseSet = set;
             window.firebaseOnValue = onValue;
             window.firebaseRemove = remove;
+
+            // 通知 Firebase 已準備完成
+            window.dispatchEvent(new Event('firebaseReady'));
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="js/scripts.js"></script>
@@ -532,178 +535,6 @@
                 
                 feather.replace();
             }
-
-            $(document).ready(function(){
-                // 確保 feather 圖標已載入
-                if (typeof feather !== 'undefined') {
-                    feather.replace();
-                }
-                
-                // 檢查並設置主題
-                const savedTheme = localStorage.getItem('theme');
-                const themeSwitch = document.querySelector('.theme-switch i');
-                
-                if (themeSwitch) {
-                    if (savedTheme === 'light') {
-                        document.body.setAttribute('data-theme', 'light');
-                        themeSwitch.setAttribute('data-feather', 'sun');
-                    } else {
-                        themeSwitch.setAttribute('data-feather', 'moon');
-                    }
-                    
-                    if (typeof feather !== 'undefined') {
-                        feather.replace();
-                    }
-                }
-                
-                const params = new URLSearchParams(location.search);
-                const route = String(params.get("route"));
-                let direction = String(params.get("direction") || "0");
-                
-                function loadBusInfo() {
-                    $("#loadingSpinner").addClass("active");
-                    $("#routeTable").hide();
-                    $("#errorAlert").hide();
-                    $("#apiStatus").hide();
-                    
-                    const TDX = `https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung?$filter=RouteName%2FZh_tw%20eq%20%27${route}%27%20and%20Direction%20eq%20%27${direction}%27&$orderby=StopSequence%20asc&$top=100&$format=JSON`;
-                    
-                    $.ajax({
-                        type: "GET",
-                        url: TDX,
-                        dataType: "json",
-                        success: function(info) {
-                            if (!info || info.length === 0) {
-                                showError("找不到此路線的即時資訊，請確認路線編號是否正確");
-                                return;
-                            }
-
-                            try {
-                                // 檢查資料格式是否正確
-                                if (!Array.isArray(info)) {
-                                    throw new Error("API 回傳資料格式不正確");
-                                }
-
-                                const totalLen = info.length;
-                                if (totalLen === 0) {
-                                    showError("此路線目前沒有運行中的公車");
-                                    return;
-                                }
-
-                                // 檢查必要欄位是否存在
-                                if (!info[0].StopName || !info[0].StopName.Zh_tw) {
-                                    throw new Error("站名資料不完整");
-                                }
-
-                                const startStop = info[0].StopName.Zh_tw;
-                                const endStop = info[totalLen-1].StopName.Zh_tw;
-                                
-                                $("#routeTitle").html(`<b>${route} 路：${startStop} - ${endStop}</b>`);
-                                $("#stopList").empty();
-                                
-                                // 監聽預約狀態
-                                const reservationsRef = window.getFirebaseReservationRef(route, direction);
-                                window.firebaseOnValue(reservationsRef, (snapshot) => {
-                                    try {
-                                        const reservations = snapshot.val() || {};
-                                        
-                                        info.forEach(stop => {
-                                            try {
-                                                if (!stop.StopName || !stop.StopName.Zh_tw) {
-                                                    console.warn("站點資料不完整，已跳過");
-                                                    return;
-                                                }
-
-                                                const time = parseInt(stop.EstimateTime / 60);
-                                                let statusClass, statusText;
-                                                
-                                                if (isNaN(time)) {
-                                                    statusClass = "status-not-scheduled";
-                                                    statusText = "未發車";
-                                                } else if (time < 0) {
-                                                    statusClass = "status-departed";
-                                                    statusText = "已離站";
-                                                } else if (time < 3) {
-                                                    statusClass = "status-arriving";
-                                                    statusText = "進站中";
-                                                } else {
-                                                    statusClass = "status-waiting";
-                                                    statusText = `${time} 分`;
-                                                }
-                                                
-                                                const isReserved = reservations[stop.StopName.Zh_tw];
-                                                const buttonClass = isReserved ? 'action-btn reserved' : 'action-btn';
-                                                const buttonText = isReserved ? '已預約' : '預約';
-                                                const buttonDisabled = isReserved ? 'disabled' : '';
-                                                
-                                                $("#stopList").append(`
-                                                    <tr>
-                                                        <td>${stop.StopName.Zh_tw}</td>
-                                                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                                                        <td>
-                                                            <button class="${buttonClass}" 
-                                                                    onclick="handleReservation('${route}', '${direction}', '${stop.StopName.Zh_tw}')"
-                                                                    ${buttonDisabled}>
-                                                                <i data-feather="calendar" class="me-1"></i>${buttonText}
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                `);
-                                            } catch (stopError) {
-                                                console.error("處理站點資料時發生錯誤:", stopError);
-                                            }
-                                        });
-                                        
-                                        feather.replace();
-                                        $("#loadingSpinner").removeClass("active");
-                                        $("#routeTable").show();
-                                        showApiStatus("資料更新成功");
-                                    } catch (reservationError) {
-                                        console.error("處理預約資料時發生錯誤:", reservationError);
-                                        showError("處理預約資料時發生錯誤，請重新整理頁面");
-                                    }
-                                }, (error) => {
-                                    console.error("Firebase 讀取錯誤:", error);
-                                    showError("無法讀取預約資料，請稍後再試");
-                                });
-                            } catch (error) {
-                                console.error("資料處理錯誤:", error);
-                                showError(`資料處理發生錯誤：${error.message}`);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("API 錯誤:", status, error);
-                            let errorMessage = "載入公車資訊失敗";
-                            
-                            if (xhr.status === 404) {
-                                errorMessage = "找不到此路線的資訊，請確認路線編號是否正確";
-                            } else if (xhr.status === 403) {
-                                errorMessage = "API 存取權限不足，請稍後再試";
-                            } else if (xhr.status === 429) {
-                                errorMessage = "請求次數過多，請稍後再試（建議等待 30 秒）";
-                                // 429 錯誤時，延長下次更新時間
-                                setTimeout(loadBusInfo, 30000);
-                            } else if (xhr.status === 500) {
-                                errorMessage = "伺服器發生錯誤，請稍後再試";
-                            } else if (xhr.status === 0) {
-                                errorMessage = "無法連接到伺服器，請檢查網路連線";
-                            }
-                            
-                            showError(errorMessage);
-                        }
-                    });
-                }
-
-                $("#directionSwitch").click(function() {
-                    direction = direction === "0" ? "1" : "0";
-                    const newUrl = `bus-route.html?route=${route}&direction=${direction}`;
-                    window.location.href = newUrl;
-                });
-
-                loadBusInfo();
-                // 每30秒更新一次資料
-                setInterval(loadBusInfo, 30000);
-            });
 
             function handleReservation(route, direction, stopName) {
                 if (confirm(`是否要預約 ${stopName} 站上下車？`)) {
@@ -742,6 +573,177 @@
                 $("#apiStatus").show().delay(3000).fadeOut();
                 feather.replace();
             }
+
+            // 等待 Firebase 準備完成
+            window.addEventListener('firebaseReady', function() {
+                $(document).ready(function(){
+                    feather.replace();
+                    
+                    // 檢查並設置主題
+                    const savedTheme = localStorage.getItem('theme');
+                    const themeSwitch = document.querySelector('.theme-switch i');
+                    
+                    if (themeSwitch) {
+                        if (savedTheme === 'light') {
+                            document.body.setAttribute('data-theme', 'light');
+                            themeSwitch.setAttribute('data-feather', 'sun');
+                        } else {
+                            themeSwitch.setAttribute('data-feather', 'moon');
+                        }
+                        
+                        if (typeof feather !== 'undefined') {
+                            feather.replace();
+                        }
+                    }
+                    
+                    const params = new URLSearchParams(location.search);
+                    const route = String(params.get("route"));
+                    let direction = String(params.get("direction") || "0");
+                    
+                    function loadBusInfo() {
+                        $("#loadingSpinner").addClass("active");
+                        $("#routeTable").hide();
+                        $("#errorAlert").hide();
+                        $("#apiStatus").hide();
+                        
+                        const TDX = `https://tdx.transportdata.tw/api/basic/v2/Bus/EstimatedTimeOfArrival/City/Taichung?$filter=RouteName%2FZh_tw%20eq%20%27${route}%27%20and%20Direction%20eq%20%27${direction}%27&$orderby=StopSequence%20asc&$top=100&$format=JSON`;
+                        
+                        $.ajax({
+                            type: "GET",
+                            url: TDX,
+                            dataType: "json",
+                            success: function(info) {
+                                if (!info || info.length === 0) {
+                                    showError("找不到此路線的即時資訊，請確認路線編號是否正確");
+                                    return;
+                                }
+
+                                try {
+                                    // 檢查資料格式是否正確
+                                    if (!Array.isArray(info)) {
+                                        throw new Error("API 回傳資料格式不正確");
+                                    }
+
+                                    const totalLen = info.length;
+                                    if (totalLen === 0) {
+                                        showError("此路線目前沒有運行中的公車");
+                                        return;
+                                    }
+
+                                    // 檢查必要欄位是否存在
+                                    if (!info[0].StopName || !info[0].StopName.Zh_tw) {
+                                        throw new Error("站名資料不完整");
+                                    }
+
+                                    const startStop = info[0].StopName.Zh_tw;
+                                    const endStop = info[totalLen-1].StopName.Zh_tw;
+                                    
+                                    $("#routeTitle").html(`<b>${route} 路：${startStop} - ${endStop}</b>`);
+                                    $("#stopList").empty();
+                                    
+                                    // 監聽預約狀態
+                                    const reservationsRef = window.getFirebaseReservationRef(route, direction);
+                                    window.firebaseOnValue(reservationsRef, (snapshot) => {
+                                        try {
+                                            const reservations = snapshot.val() || {};
+                                            
+                                            info.forEach(stop => {
+                                                try {
+                                                    if (!stop.StopName || !stop.StopName.Zh_tw) {
+                                                        console.warn("站點資料不完整，已跳過");
+                                                        return;
+                                                    }
+
+                                                    const time = parseInt(stop.EstimateTime / 60);
+                                                    let statusClass, statusText;
+                                                    
+                                                    if (isNaN(time)) {
+                                                        statusClass = "status-not-scheduled";
+                                                        statusText = "未發車";
+                                                    } else if (time < 0) {
+                                                        statusClass = "status-departed";
+                                                        statusText = "已離站";
+                                                    } else if (time < 3) {
+                                                        statusClass = "status-arriving";
+                                                        statusText = "進站中";
+                                                    } else {
+                                                        statusClass = "status-waiting";
+                                                        statusText = `${time} 分`;
+                                                    }
+                                                    
+                                                    const isReserved = reservations[stop.StopName.Zh_tw];
+                                                    const buttonClass = isReserved ? 'action-btn reserved' : 'action-btn';
+                                                    const buttonText = isReserved ? '已預約' : '預約';
+                                                    const buttonDisabled = isReserved ? 'disabled' : '';
+                                                    
+                                                    $("#stopList").append(`
+                                                        <tr>
+                                                            <td>${stop.StopName.Zh_tw}</td>
+                                                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                                                            <td>
+                                                                <button class="${buttonClass}" 
+                                                                        onclick="handleReservation('${route}', '${direction}', '${stop.StopName.Zh_tw}')"
+                                                                        ${buttonDisabled}>
+                                                                    <i data-feather="calendar" class="me-1"></i>${buttonText}
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    `);
+                                                } catch (stopError) {
+                                                    console.error("處理站點資料時發生錯誤:", stopError);
+                                                }
+                                            });
+                                            
+                                            feather.replace();
+                                            $("#loadingSpinner").removeClass("active");
+                                            $("#routeTable").show();
+                                            showApiStatus("資料更新成功");
+                                        } catch (reservationError) {
+                                            console.error("處理預約資料時發生錯誤:", reservationError);
+                                            showError("處理預約資料時發生錯誤，請重新整理頁面");
+                                        }
+                                    }, (error) => {
+                                        console.error("Firebase 讀取錯誤:", error);
+                                        showError("無法讀取預約資料，請稍後再試");
+                                    });
+                                } catch (error) {
+                                    console.error("資料處理錯誤:", error);
+                                    showError(`資料處理發生錯誤：${error.message}`);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("API 錯誤:", status, error);
+                                let errorMessage = "載入公車資訊失敗";
+                                
+                                if (xhr.status === 404) {
+                                    errorMessage = "找不到此路線的資訊，請確認路線編號是否正確";
+                                } else if (xhr.status === 403) {
+                                    errorMessage = "API 存取權限不足，請稍後再試";
+                                } else if (xhr.status === 429) {
+                                    errorMessage = "請求次數過多，請稍後再試（建議等待 30 秒）";
+                                    setTimeout(loadBusInfo, 30000);
+                                } else if (xhr.status === 500) {
+                                    errorMessage = "伺服器發生錯誤，請稍後再試";
+                                } else if (xhr.status === 0) {
+                                    errorMessage = "無法連接到伺服器，請檢查網路連線";
+                                }
+                                
+                                showError(errorMessage);
+                            }
+                        });
+
+                        $("#directionSwitch").click(function() {
+                            direction = direction === "0" ? "1" : "0";
+                            const newUrl = `bus-route.html?route=${route}&direction=${direction}`;
+                            window.location.href = newUrl;
+                        });
+
+                        loadBusInfo();
+                        // 每30秒更新一次資料
+                        setInterval(loadBusInfo, 30000);
+                    });
+                });
+            });
         </script>
     </body>
 </html> 
