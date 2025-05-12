@@ -576,7 +576,22 @@
                             }
 
                             try {
+                                // 檢查資料格式是否正確
+                                if (!Array.isArray(info)) {
+                                    throw new Error("API 回傳資料格式不正確");
+                                }
+
                                 const totalLen = info.length;
+                                if (totalLen === 0) {
+                                    showError("此路線目前沒有運行中的公車");
+                                    return;
+                                }
+
+                                // 檢查必要欄位是否存在
+                                if (!info[0].StopName || !info[0].StopName.Zh_tw) {
+                                    throw new Error("站名資料不完整");
+                                }
+
                                 const startStop = info[0].StopName.Zh_tw;
                                 const endStop = info[totalLen-1].StopName.Zh_tw;
                                 
@@ -586,57 +601,71 @@
                                 // 監聽預約狀態
                                 const reservationsRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}`);
                                 window.firebaseOnValue(reservationsRef, (snapshot) => {
-                                    const reservations = snapshot.val() || {};
-                                    
-                                    info.forEach(stop => {
-                                        const time = parseInt(stop.EstimateTime / 60);
-                                        let statusClass, statusText;
+                                    try {
+                                        const reservations = snapshot.val() || {};
                                         
-                                        if (isNaN(time)) {
-                                            statusClass = "status-not-scheduled";
-                                            statusText = "未發車";
-                                        } else if (time < 0) {
-                                            statusClass = "status-departed";
-                                            statusText = "已離站";
-                                        } else if (time < 3) {
-                                            statusClass = "status-arriving";
-                                            statusText = "進站中";
-                                        } else {
-                                            statusClass = "status-waiting";
-                                            statusText = `${time} 分`;
-                                        }
+                                        info.forEach(stop => {
+                                            try {
+                                                if (!stop.StopName || !stop.StopName.Zh_tw) {
+                                                    console.warn("站點資料不完整，已跳過");
+                                                    return;
+                                                }
+
+                                                const time = parseInt(stop.EstimateTime / 60);
+                                                let statusClass, statusText;
+                                                
+                                                if (isNaN(time)) {
+                                                    statusClass = "status-not-scheduled";
+                                                    statusText = "未發車";
+                                                } else if (time < 0) {
+                                                    statusClass = "status-departed";
+                                                    statusText = "已離站";
+                                                } else if (time < 3) {
+                                                    statusClass = "status-arriving";
+                                                    statusText = "進站中";
+                                                } else {
+                                                    statusClass = "status-waiting";
+                                                    statusText = `${time} 分`;
+                                                }
+                                                
+                                                const isReserved = reservations[stop.StopName.Zh_tw];
+                                                const buttonClass = isReserved ? 'action-btn reserved' : 'action-btn';
+                                                const buttonText = isReserved ? '已預約' : '預約';
+                                                const buttonDisabled = isReserved ? 'disabled' : '';
+                                                
+                                                $("#stopList").append(`
+                                                    <tr>
+                                                        <td>${stop.StopName.Zh_tw}</td>
+                                                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                                                        <td>
+                                                            <button class="${buttonClass}" 
+                                                                    onclick="handleReservation('${route}', '${direction}', '${stop.StopName.Zh_tw}')"
+                                                                    ${buttonDisabled}>
+                                                                <i data-feather="calendar" class="me-1"></i>${buttonText}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                `);
+                                            } catch (stopError) {
+                                                console.error("處理站點資料時發生錯誤:", stopError);
+                                            }
+                                        });
                                         
-                                        const isReserved = reservations[stop.StopName.Zh_tw];
-                                        const buttonClass = isReserved ? 'action-btn reserved' : 'action-btn';
-                                        const buttonText = isReserved ? '已預約' : '預約';
-                                        const buttonDisabled = isReserved ? 'disabled' : '';
-                                        
-                                        $("#stopList").append(`
-                                            <tr>
-                                                <td>${stop.StopName.Zh_tw}</td>
-                                                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                                                <td>
-                                                    <button class="${buttonClass}" 
-                                                            onclick="handleReservation('${route}', '${direction}', '${stop.StopName.Zh_tw}')"
-                                                            ${buttonDisabled}>
-                                                        <i data-feather="calendar" class="me-1"></i>${buttonText}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `);
-                                    });
-                                    
-                                    feather.replace();
-                                    $("#loadingSpinner").removeClass("active");
-                                    $("#routeTable").show();
-                                    showApiStatus("資料更新成功");
+                                        feather.replace();
+                                        $("#loadingSpinner").removeClass("active");
+                                        $("#routeTable").show();
+                                        showApiStatus("資料更新成功");
+                                    } catch (reservationError) {
+                                        console.error("處理預約資料時發生錯誤:", reservationError);
+                                        showError("處理預約資料時發生錯誤，請重新整理頁面");
+                                    }
                                 }, (error) => {
                                     console.error("Firebase 讀取錯誤:", error);
                                     showError("無法讀取預約資料，請稍後再試");
                                 });
                             } catch (error) {
                                 console.error("資料處理錯誤:", error);
-                                showError("資料處理發生錯誤，請重新整理頁面");
+                                showError(`資料處理發生錯誤：${error.message}`);
                             }
                         },
                         error: function(xhr, status, error) {
