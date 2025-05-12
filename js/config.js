@@ -7,4 +7,6 @@ const firebaseConfig = {
     appId: process.env.FIREBASE_APP_ID || '1:959390803671:web:bc5c79576e5884737cf292',
     measurementId: process.env.FIREBASE_MEASUREMENT_ID || 'G-2W3F922KRZ',
     databaseURL: process.env.FIREBASE_DATABASE_URL || 'https://taichungbus-a6cc5-default-rtdb.asia-southeast1.firebasedatabase.app'
-}; 
+};
+
+export { firebaseConfig }; 

@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="台中公車即時查詢系統" />
-        <meta name="author" content="" />
+        <meta name="description" content="台中公車即時查詢系統 - 提供台中市公車路線即時到站資訊、站點預約功能，支援深色/淺色主題切換，讓您輕鬆掌握公車動態。" />
+        <meta name="author" content="xiaojie4082" />
         <title>公車路線查詢</title>
         <link rel="icon" type="image/x-icon" href="./icon.png" />
         <link href="css/styles.css" rel="stylesheet" />
@@ -517,20 +517,27 @@
             }
 
             $(document).ready(function(){
-                feather.replace();
+                // 確保 feather 圖標已載入
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
                 
                 // 檢查並設置主題
                 const savedTheme = localStorage.getItem('theme');
                 const themeSwitch = document.querySelector('.theme-switch i');
                 
-                if (savedTheme === 'light') {
-                    document.body.setAttribute('data-theme', 'light');
-                    themeSwitch.setAttribute('data-feather', 'sun');
-                } else {
-                    themeSwitch.setAttribute('data-feather', 'moon');
+                if (themeSwitch) {
+                    if (savedTheme === 'light') {
+                        document.body.setAttribute('data-theme', 'light');
+                        themeSwitch.setAttribute('data-feather', 'sun');
+                    } else {
+                        themeSwitch.setAttribute('data-feather', 'moon');
+                    }
+                    
+                    if (typeof feather !== 'undefined') {
+                        feather.replace();
+                    }
                 }
-                
-                feather.replace();
                 
                 const params = new URLSearchParams(location.search);
                 const route = String(params.get("route"));
