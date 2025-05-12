@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: true # Note: deploy.yml has this as false, consider if consistency is needed.
 
 jobs:
   deploy:
@@ -29,10 +29,17 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3 # Updated from v2
         with:
-          path: '.'  # 如果你只是要部署整個 repo，可以保留；否則建議改成 './dist' 或你產出的目錄
+          # If you just want to deploy the entire repo, path should be '.'
+          # If you have a build output (e.g., in a 'dist' or 'public' folder), change path accordingly.
+          # For simple static sites without a build step, '.' is fine.
+          # For consistency with deploy.yml which has a build step outputting to './dist',
+          # ensure this path is correct for what this 'static.yml' workflow intends to deploy.
+          # If this workflow assumes no build and deploys source, '.' is fine.
+          # The comment suggests './dist' or your output directory if applicable.
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4 # Updated from v2
