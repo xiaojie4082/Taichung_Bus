@@ -41,11 +41,11 @@
 
 - 作者：xiaojie4082
 - 版本：1.0.0
-- 最後更新：<script>document.write(new Date().getFullYear())</script>
+- 最後更新：2025
 
 ## 授權說明
 
-Copyright © <script>document.write(new Date().getFullYear())</script> xiaojie4082. All rights reserved.
+Copyright © 2025 xiaojie4082. All rights reserved.
 
 ## 資料來源
 
