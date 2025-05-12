@@ -731,17 +731,17 @@
                                 showError(errorMessage);
                             }
                         });
+                    }
 
-                        $("#directionSwitch").click(function() {
-                            direction = direction === "0" ? "1" : "0";
-                            const newUrl = `bus-route.html?route=${route}&direction=${direction}`;
-                            window.location.href = newUrl;
-                        });
-
-                        loadBusInfo();
-                        // 每30秒更新一次資料
-                        setInterval(loadBusInfo, 30000);
+                    $("#directionSwitch").click(function() {
+                        direction = direction === "0" ? "1" : "0";
+                        const newUrl = `bus-route.html?route=${route}&direction=${direction}`;
+                        window.location.href = newUrl;
                     });
+
+                    loadBusInfo();
+                    // 每30秒更新一次資料
+                    setInterval(loadBusInfo, 30000);
                 });
             });
         </script>
