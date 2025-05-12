@@ -490,9 +490,13 @@
             const analytics = getAnalytics(app);
             const database = getDatabase(app);
 
-            // 將 Firebase 實例設為全域變數
+            // 將 Firebase 實例和函數設為全域變數
             window.firebaseApp = app;
             window.firebaseDatabase = database;
+            window.firebaseRef = ref;
+            window.firebaseSet = set;
+            window.firebaseOnValue = onValue;
+            window.firebaseRemove = remove;
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="js/scripts.js"></script>
@@ -562,8 +566,8 @@
                             $("#stopList").empty();
                             
                             // 監聽預約狀態
-                            const reservationsRef = ref(window.firebaseDatabase, `reservations/${route}/${direction}`);
-                            onValue(reservationsRef, (snapshot) => {
+                            const reservationsRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}`);
+                            window.firebaseOnValue(reservationsRef, (snapshot) => {
                                 const reservations = snapshot.val() || {};
                                 
                                 info.forEach(stop => {
@@ -629,10 +633,10 @@
 
             function handleReservation(route, direction, stopName) {
                 if (confirm(`是否要預約 ${stopName} 站上下車？`)) {
-                    const reservationRef = ref(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
+                    const reservationRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
                     
                     // 設置預約狀態
-                    set(reservationRef, {
+                    window.firebaseSet(reservationRef, {
                         timestamp: Date.now()
                     }).then(() => {
                         alert(`${stopName} 站預約完成！`);
@@ -646,8 +650,8 @@
             // 監聽公車進站狀態，自動取消預約
             function checkBusArrival(route, direction, stopName, time) {
                 if (time < 3) {
-                    const reservationRef = ref(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
-                    remove(reservationRef);
+                    const reservationRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
+                    window.firebaseRemove(reservationRef);
                 }
             }
         </script>
