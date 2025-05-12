@@ -500,10 +500,13 @@
             const analytics = getAnalytics(app);
             const database = getDatabase(app);
 
-            // 將 Firebase 實例和函數設為全域變數
-            window.firebaseApp = app;
-            window.firebaseDatabase = database;
-            window.firebaseRef = ref;
+            // 包成全域 function
+            window.getFirebaseReservationRef = (route, direction) => {
+                return ref(database, `reservations/${route}/${direction}`);
+            };
+            window.getFirebaseStopRef = (route, direction, stopName) => {
+                return ref(database, `reservations/${route}/${direction}/${stopName}`);
+            };
             window.firebaseSet = set;
             window.firebaseOnValue = onValue;
             window.firebaseRemove = remove;
@@ -599,7 +602,7 @@
                                 $("#stopList").empty();
                                 
                                 // 監聽預約狀態
-                                const reservationsRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}`);
+                                const reservationsRef = window.getFirebaseReservationRef(route, direction);
                                 window.firebaseOnValue(reservationsRef, (snapshot) => {
                                     try {
                                         const reservations = snapshot.val() || {};
@@ -704,7 +707,7 @@
 
             function handleReservation(route, direction, stopName) {
                 if (confirm(`是否要預約 ${stopName} 站上下車？`)) {
-                    const reservationRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
+                    const reservationRef = window.getFirebaseStopRef(route, direction, stopName);
                     
                     // 設置預約狀態
                     window.firebaseSet(reservationRef, {
@@ -721,7 +724,7 @@
             // 監聽公車進站狀態，自動取消預約
             function checkBusArrival(route, direction, stopName, time) {
                 if (time < 3) {
-                    const reservationRef = window.firebaseRef(window.firebaseDatabase, `reservations/${route}/${direction}/${stopName}`);
+                    const reservationRef = window.getFirebaseStopRef(route, direction, stopName);
                     window.firebaseRemove(reservationRef);
                 }
             }
