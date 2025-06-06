@@ -8,326 +8,308 @@
         <meta name="google-site-verification" content="h9t5YQAOXJ1XlnLQuP3eSPiAbXyqnLTz_FT8Z1m6xDQ" />
         <title>台中公車查詢</title>
         <link rel="icon" type="image/x-icon" href="./icon.png" />
-        <link href="css/styles.css" rel="stylesheet" />
-        <script src="https://unpkg.com/feather-icons"></script>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
         <style>
             :root {
-                --bg-color: #1a1a1a;
-                --text-color: #e0e0e0;
-                --card-bg: #2d2d2d;
-                --border-color: #404040;
-                --primary-color: #4361ee;
-                --success-color: #2ec4b6;
-                --hover-bg: #3a3a3a;
-                --shadow-color: rgba(0, 0, 0, 0.2);
+                --bs-primary: #0d6efd;
+                --bs-success: #198754;
             }
-
-            [data-theme="light"] {
-                --bg-color: #f8f9fa;
-                --text-color: #2c3e50;
-                --card-bg: #ffffff;
-                --border-color: #e9ecef;
-                --primary-color: #4361ee;
-                --success-color: #2ec4b6;
-                --hover-bg: #f8f9fa;
-                --shadow-color: rgba(0, 0, 0, 0.05);
-            }
-
+            
             body {
-                background: var(--bg-color);
-                color: var(--text-color);
-                transition: all 0.3s ease;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
+                background-color: #f8f9fa;
             }
 
-            .container {
-                flex: 1 0 auto;
-                padding-bottom: 2rem;
+            .navbar {
+                background: rgba(255, 255, 255, 0.98) !important;
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                padding: 0.8rem 0;
             }
 
-            .theme-switch {
-                position: fixed;
-                top: 1rem;
-                right: 1rem;
-                z-index: 1000;
-                background: var(--card-bg);
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
+            .navbar-brand {
+                font-weight: 700;
+                font-size: 1.4rem;
+                color: var(--bs-primary) !important;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                box-shadow: 0 2px 5px var(--shadow-color);
+                gap: 0.6rem;
+                padding: 0.5rem 1rem;
+                border-radius: 0.8rem;
                 transition: all 0.3s ease;
             }
 
-            .theme-switch:hover {
-                transform: translateY(-2px);
+            .navbar-brand:hover {
+                background: rgba(13, 110, 253, 0.1);
+                transform: translateY(-1px);
             }
 
-            .theme-switch i {
-                color: var(--text-color);
+            .navbar-brand i {
+                font-size: 1.6rem;
+                background: var(--bs-primary);
+                color: white;
+                padding: 0.4rem;
+                border-radius: 0.6rem;
+            }
+
+            .nav-link {
+                font-weight: 600;
+                color: var(--bs-dark) !important;
+                padding: 0.7rem 1.2rem !important;
+                border-radius: 0.8rem;
+                transition: all 0.3s ease;
+                margin: 0 0.2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .nav-link:hover {
+                background: rgba(13, 110, 253, 0.1);
+                color: var(--bs-primary) !important;
+                transform: translateY(-1px);
+            }
+
+            .nav-link.active {
+                background: var(--bs-primary);
+                color: white !important;
+                box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+            }
+
+            .nav-link i {
                 font-size: 1.2rem;
             }
 
-            .search-container {
-                background: var(--card-bg);
-                padding: 3rem 2rem;
-                border-radius: 16px;
-                box-shadow: 0 4px 6px var(--shadow-color);
-                margin-bottom: 2rem;
-                transition: all 0.3s ease;
-                max-width: 1000px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .card {
-                background: var(--card-bg);
+            .navbar-toggler {
                 border: none;
-                border-radius: 16px;
-                box-shadow: 0 4px 6px var(--shadow-color);
+                padding: 0.5rem;
+                border-radius: 0.8rem;
                 transition: all 0.3s ease;
+            }
+
+            .navbar-toggler:hover {
+                background: rgba(13, 110, 253, 0.1);
+            }
+
+            .navbar-toggler:focus {
+                box-shadow: none;
+            }
+
+            .hero-section {
+                background: linear-gradient(135deg, var(--bs-primary) 0%, #0a58ca 100%);
+                color: white;
+                padding: 4rem 0;
                 margin-bottom: 2rem;
-                max-width: 1000px;
-                margin-left: auto;
-                margin-right: auto;
             }
 
-            .form-control {
-                background: var(--bg-color);
-                border: 2px solid var(--border-color);
-                color: var(--text-color);
+            .search-box {
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                margin-top: -3rem;
+                position: relative;
+                z-index: 1;
             }
 
-            .form-control:focus {
-                background: var(--card-bg);
-                border-color: var(--primary-color);
-                color: var(--text-color);
-            }
-
-            .alert-info {
-                background: rgba(67, 97, 238, 0.1);
+            .route-card {
                 border: none;
-                border-radius: 12px;
-                color: var(--text-color);
-                padding: 1rem 1.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                max-width: 1000px;
-                margin: 0 auto;
+                border-radius: 1rem;
+                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+                transition: transform 0.2s;
             }
 
-            .footer {
-                background: var(--card-bg) !important;
-                border-top: 1px solid var(--border-color);
-                padding: 1.5rem 0;
-                margin-top: auto;
-                width: 100%;
+            .route-card:hover {
+                transform: translateY(-5px);
             }
 
-            .text-muted {
-                color: var(--text-color) !important;
-                opacity: 0.7;
-            }
-
-            .route-section {
-                background: var(--card-bg);
-                border-radius: 12px;
+            .route-card .card-header {
+                background: none;
+                border-bottom: 2px solid #f8f9fa;
                 padding: 1.5rem;
-                margin: 1rem;
-                box-shadow: 0 2px 4px var(--shadow-color);
-            }
-
-            .route-section h4 {
-                color: var(--text-color);
-            }
-
-            .route-section h4:after {
-                background: var(--primary-color);
-            }
-
-            .section-title {
-                color: var(--text-color);
-            }
-
-            .section-title:after {
-                background: var(--primary-color);
-            }
-
-            .alert-link {
-                color: var(--primary-color);
-            }
-
-            .footer a {
-                color: var(--primary-color);
             }
 
             .route-btn {
-                margin: 0.3rem;
-                min-width: 80px;
-                padding: 0.6rem 1rem;
-                border-radius: 8px;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                border-radius: 0.5rem;
+                padding: 0.75rem;
                 font-weight: 500;
-                transition: all 0.3s ease;
-                border: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none;
-                font-size: 0.9rem;
             }
-            .route-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                text-decoration: none;
+
+            .footer {
+                background-color: #f8f9fa;
+                padding: 2rem 0;
+                margin-top: 4rem;
+                border-top: 1px solid #dee2e6;
             }
-            .btn-primary {
-                background: #4361ee;
-                color: white;
-            }
-            .btn-primary:hover {
-                background: #3a56d4;
-                color: white;
-            }
-            .btn-success {
-                background: #2ec4b6;
-                color: white;
-            }
-            .btn-success:hover {
-                background: #29b0a3;
-                color: white;
-            }
-            .route-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 0.6rem;
-                margin-bottom: 1rem;
-                justify-items: center;
-            }
+
             @media (max-width: 768px) {
-                .search-container {
-                    padding: 1.5rem 1rem;
-                    margin: 0.5rem;
+                .hero-section {
+                    padding: 3rem 0;
                 }
-                .card-body {
-                    padding: 1rem;
-                }
-                .route-grid {
-                    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-                    gap: 0.4rem;
-                    padding: 0 0.5rem;
-                }
-                .route-btn {
-                    min-width: 70px;
-                    padding: 0.5rem 0.7rem;
-                    font-size: 0.85rem;
-                    margin: 0.2rem;
-                }
-                .section-title {
-                    font-size: 1.5rem;
-                    margin-bottom: 1.5rem;
-                }
-                .form-control {
-                    padding: 0.8rem 1rem;
-                    font-size: 1rem;
-                }
-                .alert-info {
-                    margin: 0.5rem;
-                    padding: 0.8rem;
-                    font-size: 0.9rem;
-                }
-                .container {
-                    padding-left: 0.5rem;
-                    padding-right: 0.5rem;
-                }
-                .card {
-                    margin: 0.5rem;
-                }
-                .route-section {
-                    padding: 0.5rem;
-                }
-                .route-section h4 {
-                    font-size: 1.1rem;
-                    margin-bottom: 1rem;
-                }
-            }
-            @media (max-width: 360px) {
-                .route-grid {
-                    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-                }
-                .route-btn {
-                    padding: 0.4rem 0.6rem;
-                    font-size: 0.8rem;
-                    min-width: 60px;
-                }
-                .section-title {
-                    font-size: 1.3rem;
-                }
-                .alert-info {
-                    font-size: 0.85rem;
-                    padding: 0.7rem;
+                
+                .search-box {
+                    margin-top: -2rem;
+                    padding: 1.5rem;
                 }
             }
         </style>
     </head>
     <body>
-        <button class="theme-switch" onclick="toggleTheme()" title="切換主題">
-            <i data-feather="moon"></i>
-        </button>
-        <div class="container py-5">
-            <div class="search-container text-center">
-                <h2 class="section-title">台中公車即時查詢</h2>
-                <p class="text-muted mb-4">請輸入公車路線代號或選擇下方路線</p>
-                <form onsubmit="handleSubmit(event)" class="mb-4">
-                    <div class="form-group">
-                        <input type="text" class="form-control mx-auto" style="max-width: 400px;" name="route" id="route" placeholder="請輸入公車路線代號" required>
-                    </div>
-                </form>
+        <!-- 導航欄 -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <i class="bi bi-bus-front"></i>
+                    <span>台中公車查詢</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">
+                                <i class="bi bi-house-door"></i>
+                                <span>首頁</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">
+                                <i class="bi bi-info-circle"></i>
+                                <span>關於</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要內容區 -->
+        <main style="padding-top: 76px;">
+            <!-- 英雄區塊 -->
+            <section class="hero-section">
+                <div class="container text-center">
+                    <h1 class="display-4 fw-bold mb-3">台中公車即時查詢</h1>
+                    <p class="lead mb-0">快速查詢公車路線、站點及即時動態</p>
+                </div>
+            </section>
+
+            <!-- 搜尋區塊 -->
+            <div class="container">
+                <div class="search-box">
+                    <form onsubmit="handleSubmit(event)" class="row g-3">
+                        <div class="col-md-8 mx-auto">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" id="route" placeholder="請輸入公車路線代號" required>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search me-2"></i>查詢
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h3 class="section-title">幹線公車路線</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="route-section">
-                                <h4 class="text-center">往台中車站</h4>
-                                <div class="route-grid">
-                                    <a href="bus-route.html?route=300&direction=0" class="btn btn-primary route-btn">300 路</a>
-                                    <a href="bus-route.html?route=301&direction=0" class="btn btn-primary route-btn">301 路</a>
-                                    <a href="bus-route.html?route=302&direction=0" class="btn btn-primary route-btn">302 路</a>
-                                    <a href="bus-route.html?route=303&direction=0" class="btn btn-primary route-btn">303 路</a>
-                                    <a href="bus-route.html?route=304&direction=0" class="btn btn-primary route-btn">304 路</a>
-                                    <a href="bus-route.html?route=305&direction=0" class="btn btn-primary route-btn">305 路</a>
-                                    <a href="bus-route.html?route=306&direction=0" class="btn btn-primary route-btn">306 路</a>
-                                    <a href="bus-route.html?route=307&direction=0" class="btn btn-primary route-btn">307 路</a>
-                                    <a href="bus-route.html?route=308&direction=0" class="btn btn-primary route-btn">308 路</a>
-                                    <a href="bus-route.html?route=309&direction=0" class="btn btn-primary route-btn">309 路</a>
-                                    <a href="bus-route.html?route=310&direction=0" class="btn btn-primary route-btn">310 路</a>
+            <!-- 路線區塊 -->
+            <div class="container mt-5">
+                <div class="row g-4">
+                    <!-- 往台中車站 -->
+                    <div class="col-md-6">
+                        <div class="route-card card h-100">
+                            <div class="card-header">
+                                <h3 class="h5 mb-0">
+                                    <i class="bi bi-arrow-right-circle-fill text-primary me-2"></i>
+                                    往台中車站
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=300&direction=0" class="btn btn-outline-primary route-btn">300 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=301&direction=0" class="btn btn-outline-primary route-btn">301 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=302&direction=0" class="btn btn-outline-primary route-btn">302 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=303&direction=0" class="btn btn-outline-primary route-btn">303 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=304&direction=0" class="btn btn-outline-primary route-btn">304 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=305&direction=0" class="btn btn-outline-primary route-btn">305 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=306&direction=0" class="btn btn-outline-primary route-btn">306 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=307&direction=0" class="btn btn-outline-primary route-btn">307 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=308&direction=0" class="btn btn-outline-primary route-btn">308 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=309&direction=0" class="btn btn-outline-primary route-btn">309 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=310&direction=0" class="btn btn-outline-primary route-btn">310 路</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="route-section">
-                                <h4 class="text-center">往靜宜大學/海線</h4>
-                                <div class="route-grid">
-                                    <a href="bus-route.html?route=300&direction=1" class="btn btn-success route-btn">300 路</a>
-                                    <a href="bus-route.html?route=301&direction=1" class="btn btn-success route-btn">301 路</a>
-                                    <a href="bus-route.html?route=302&direction=1" class="btn btn-success route-btn">302 路</a>
-                                    <a href="bus-route.html?route=303&direction=1" class="btn btn-success route-btn">303 路</a>
-                                    <a href="bus-route.html?route=304&direction=1" class="btn btn-success route-btn">304 路</a>
-                                    <a href="bus-route.html?route=305&direction=1" class="btn btn-success route-btn">305 路</a>
-                                    <a href="bus-route.html?route=306&direction=1" class="btn btn-success route-btn">306 路</a>
-                                    <a href="bus-route.html?route=307&direction=1" class="btn btn-success route-btn">307 路</a>
-                                    <a href="bus-route.html?route=308&direction=1" class="btn btn-success route-btn">308 路</a>
-                                    <a href="bus-route.html?route=309&direction=1" class="btn btn-success route-btn">309 路</a>
-                                    <a href="bus-route.html?route=310&direction=1" class="btn btn-success route-btn">310 路</a>
+                    </div>
+
+                    <!-- 往靜宜大學/海線 -->
+                    <div class="col-md-6">
+                        <div class="route-card card h-100">
+                            <div class="card-header">
+                                <h3 class="h5 mb-0">
+                                    <i class="bi bi-arrow-left-circle-fill text-success me-2"></i>
+                                    往靜宜大學/海線
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=300&direction=1" class="btn btn-outline-success route-btn">300 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=301&direction=1" class="btn btn-outline-success route-btn">301 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=302&direction=1" class="btn btn-outline-success route-btn">302 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=303&direction=1" class="btn btn-outline-success route-btn">303 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=304&direction=1" class="btn btn-outline-success route-btn">304 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=305&direction=1" class="btn btn-outline-success route-btn">305 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=306&direction=1" class="btn btn-outline-success route-btn">306 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=307&direction=1" class="btn btn-outline-success route-btn">307 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=308&direction=1" class="btn btn-outline-success route-btn">308 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=309&direction=1" class="btn btn-outline-success route-btn">309 路</a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="bus-route.html?route=310&direction=1" class="btn btn-outline-success route-btn">310 路</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -335,69 +317,40 @@
                 </div>
             </div>
 
-            <div class="alert alert-info" role="alert">
-                <i data-feather="info" class="me-2"></i>
-                資料來源：<a href="https://tdx.transportdata.tw/" target="_blank" class="alert-link">TDX 運輸資料流通服務</a>
+            <!-- 資料來源說明 -->
+            <div class="container mt-4">
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <div>
+                        資料來源：<a href="https://tdx.transportdata.tw/" target="_blank" class="alert-link">TDX 運輸資料流通服務</a>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
 
+        <!-- 頁尾 -->
         <footer class="footer">
-            <div class="container text-center">
-                <span class="text-muted">Copyright © 2024 <a href="" target="_blank" class="text-decoration-none">xiaojie4082</a>. All rights reserved.</span>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0">Copyright © 2024 xiaojie4082. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <a href="#" class="text-decoration-none me-3">隱私政策</a>
+                        <a href="#" class="text-decoration-none">使用條款</a>
+                    </div>
+                </div>
             </div>
         </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="js/scripts.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             function handleSubmit(event) {
                 event.preventDefault();
                 const route = document.getElementById('route').value;
                 window.location.href = `bus-route.html?route=${route}&direction=0`;
             }
-
-            function toggleTheme() {
-                const body = document.body;
-                const themeSwitch = document.querySelector('.theme-switch i');
-                const currentTheme = body.getAttribute('data-theme');
-                
-                if (currentTheme === 'light') {
-                    body.removeAttribute('data-theme');
-                    themeSwitch.setAttribute('data-feather', 'moon');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    body.setAttribute('data-theme', 'light');
-                    themeSwitch.setAttribute('data-feather', 'sun');
-                    localStorage.setItem('theme', 'light');
-                }
-                
-                feather.replace();
-            }
-
-            $(document).ready(function(){
-                feather.replace();
-                
-                // 檢查並設置主題
-                const savedTheme = localStorage.getItem('theme');
-                const themeSwitch = document.querySelector('.theme-switch i');
-                
-                if (savedTheme === 'light') {
-                    document.body.setAttribute('data-theme', 'light');
-                    themeSwitch.setAttribute('data-feather', 'sun');
-                } else {
-                    themeSwitch.setAttribute('data-feather', 'moon');
-                }
-                
-                feather.replace();
-
-                const params = new URLSearchParams(location.search);
-                var Route = String(params.get("route"));
-                if(Route && Route !== "null"){
-                    url = "bus-route.html?route=" + Route + "&direction=0";
-                    $(location).attr("href", decodeURI(url));
-                }
-            });    
         </script>
     </body>
 </html>
