@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+
+# 構建輸出
+dist
+build
+
+# 環境文件
+.env
+.env.local
+.env.*.local
+
+# 編輯器配置
+.vscode
+.idea
+*.swp
+*.swo
+
+# 系統文件
+.DS_Store
+Thumbs.db 

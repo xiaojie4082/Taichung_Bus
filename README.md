@@ -20,13 +20,30 @@
 - 資料來源：TDX 運輸資料流通服務
 - 資料庫：Firebase Realtime Database
 - 分析工具：Firebase Analytics
+- 容器化：Docker
 
 ## 使用方式
+
+### 本地開發
 
 1. 開啟首頁 `index.html`
 2. 輸入欲查詢的公車路線編號
 3. 選擇行駛方向（去程/返程）
 4. 查看即時到站資訊
+
+### 使用 Docker
+
+1. 構建 Docker 映像：
+   ```bash
+   docker build -t taichung-bus .
+   ```
+
+2. 運行容器：
+   ```bash
+   docker run -d -p 80:80 taichung-bus
+   ```
+
+3. 在瀏覽器中訪問 `http://localhost` 即可使用系統
 
 ## 系統需求
 
@@ -36,6 +53,7 @@
   - Safari
   - Microsoft Edge
 - 需要網路連線以獲取即時資料
+- 如需使用 Docker 版本，需要安裝 Docker 環境
 
 ## 開發者資訊
 
@@ -55,4 +73,5 @@ Copyright © 2025 xiaojie4082. All rights reserved.
 
 - 系統每分鐘自動更新一次資料
 - 如遇到 API 存取限制，系統會自動等待 30 秒後重試
-- 建議使用最新版本的瀏覽器以獲得最佳使用體驗 
+- 建議使用最新版本的瀏覽器以獲得最佳使用體驗
+- Docker 版本使用 nginx 作為 Web 服務器，確保最佳效能 
